@@ -15,6 +15,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Install hey for load testing
+    - name: Install hey
+      run: |
+        curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64
+        chmod +x hey
+        sudo mv hey /usr/local/bin/
+
     # Set up KinD (Kubernetes in Docker)
     - name: Set up KinD
       run: |
