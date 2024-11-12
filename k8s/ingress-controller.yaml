@@ -1,33 +1,32 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: foo-ingress
+  name: ingress-nginx-controller
+  labels:
+    app: ingress-nginx
 spec:
-  rules:
-  - host: foo.localhost
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: foo-deployment
-            port:
-              number: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-nginx
+  template:
+    metadata:
+      labels:
+        app: ingress-nginx
+    spec:
+      containers:
+      - name: ingress-nginx
+        image: nginx-ingress-controller:latest
+        ports:
+        - containerPort: 80
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: bar-ingress
+  name: ingress-nginx-controller
 spec:
-  rules:
-  - host: bar.localhost
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: bar-deployment
-            port:
-              number: 80
+  selector:
+    app: ingress-nginx
+  ports:
+    - port: 80
+      targetPort: 80
