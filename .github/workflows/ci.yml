@@ -1,0 +1,48 @@
+name: SRE Assignment CI Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - preprod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up KinD (Kubernetes in Docker)
+    - name: Set up KinD
+      run: |
+        curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+        chmod +x ./kind
+        sudo mv ./kind /usr/local/bin/kind
+        kind create cluster --config=k8s/cluster-config.yaml
+
+    # Deploy NGINX Ingress Controller
+    - name: Deploy NGINX Ingress Controller
+      run: kubectl apply -f k8s/ingress-controller.yaml
+
+    # Deploy foo and bar services
+    - name: Deploy foo and bar
+      run: |
+        kubectl apply -f k8s/foo-deployment.yaml
+        kubectl apply -f k8s/bar-deployment.yaml
+
+    # Deploy Prometheus and Grafana
+    - name: Deploy Prometheus and Grafana
+      run: |
+        kubectl apply -f k8s/prometheus-deployment.yaml
+        kubectl apply -f k8s/grafana-deployment.yaml
+
+    # Run Load Test
+    - name: Run Load Test
+      run: bash scripts/load-test.sh
+
+    # Post Load Test Result as PR Comment
+    - name: Post Load Test Result as PR Comment
+      run: gh pr comment ${{ github.event.pull_request.number }} --body "$(cat load-test-result.txt)"

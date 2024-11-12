@@ -13,20 +13,9 @@ spec:
         app: foo
     spec:
       containers:
-        - name: foo-container
-          image: hashicorp/http-echo:latest # Example image for HTTP echo
-          args:
-            - "-text=foo"
-          ports:
-            - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: foo-service
-spec:
-  selector:
-    app: foo
-  ports:
-    - port: 80
-      targetPort: 8080
+      - name: foo-container
+        image: hashicorp/http-echo
+        args:
+        - "-text=foo"
+        ports:
+        - containerPort: 80
