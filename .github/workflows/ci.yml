@@ -40,6 +40,11 @@ jobs:
         sudo mv ./kind /usr/local/bin/kind
         kind create cluster --config=k8s/cluster-config.yaml
 
+    # Apply RBAC resources (if applicable)
+    - name: Apply RBAC resources
+      run: kubectl apply -f k8s/ingress-controller-rbac.yaml
+      # Uncomment if you have RBAC defined separately.
+
     # Deploy NGINX Ingress Controller
     - name: Deploy NGINX Ingress Controller
       run: kubectl apply -f k8s/ingress-controller.yaml
@@ -55,6 +60,13 @@ jobs:
       run: |
         kubectl apply -f k8s/prometheus-deployment.yaml
         kubectl apply -f k8s/grafana-deployment.yaml
+
+    # Wait for Ingress controller to be ready (to handle traffic)
+    - name: Wait for NGINX Ingress controller
+      run: |
+        kubectl rollout status deployment/nginx-ingress-controller -n ingress-nginx
+        sleep 30  # Allow some time for the controller to settle
+
 
     # Port-forward the services for load testing
     - name: Port-forward foo and bar services
