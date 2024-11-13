@@ -56,6 +56,13 @@ jobs:
         kubectl apply -f k8s/prometheus-deployment.yaml
         kubectl apply -f k8s/grafana-deployment.yaml
 
+    # Port-forward the services for load testing
+    - name: Port-forward foo and bar services
+      run: |
+        kubectl port-forward service/foo 8080:80 &
+        kubectl port-forward service/bar 8081:80 &
+        sleep 10  # Wait for services to be available
+
     # Run Load Test
     - name: Run Load Test
       run: bash scripts/load-test.sh
