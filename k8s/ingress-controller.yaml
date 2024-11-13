@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx-ingress-controller
-        image: docker pull nginx/nginx-ingress:edge-alpine
+        image: nginx/nginx-ingress:edge-alpine
         ports:
         - containerPort: 80
         - containerPort: 443
