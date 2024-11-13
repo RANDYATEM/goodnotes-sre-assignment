@@ -74,19 +74,12 @@ jobs:
         echo "Checking pods..."
         kubectl get pods
         
-    - name: Describe Pods for Errors
+    - name: Wait for Pods to Be Ready
       run: |
-       # Get the pod names for the specific deployments
-         GRAFANA_POD=$(kubectl get pods -l app=grafana -o jsonpath='{.items[0].metadata.name}')
-          NGINX_POD=$(kubectl get pods -l app=nginx-ingress-controller -o jsonpath='{.items[0].metadata.name}')
-          PROMETHEUS_POD=$(kubectl get pods -l app=prometheus -o jsonpath='{.items[0].metadata.name}')
-    
-          # Describe the pods for errors
-          kubectl describe pod $GRAFANA_POD
-          kubectl describe pod $NGINX_POD
-          kubectl describe pod $PROMETHEUS_POD
+        kubectl wait --for=condition=ready pod -l app=grafana --timeout=60s
+        kubectl wait --for=condition=ready pod -l app=nginx-ingress-controller --timeout=60s
+        kubectl wait --for=condition=ready pod -l app=prometheus --timeout=60s
 
-    
     # Run Load Test
     - name: Run Load Test
       run: bash scripts/load-test.sh
