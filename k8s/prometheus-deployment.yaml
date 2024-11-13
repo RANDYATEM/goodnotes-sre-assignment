@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.36.0   # You can also use prom/prometheus:latest for the latest image
+        image: prom/prometheus:latest  # You can also use prom/prometheus:latest for the latest image
         imagePullPolicy: Always           # Ensures that Kubernetes always pulls the latest image
         ports:
         - containerPort: 9090
