@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx-ingress-controller
-        image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:latest  # Updated image
+        image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master  # Updated image
         ports:
         - containerPort: 80
         - containerPort: 443
