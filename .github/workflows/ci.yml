@@ -70,12 +70,6 @@ jobs:
         kubectl get deployments
         echo "Checking pods..."
         kubectl get pods
-        
-    - name: Wait for Pods to Be Ready
-      run: |
-        kubectl wait --for=condition=ready pod -l app=grafana --timeout=60s
-        kubectl wait --for=condition=ready pod -l app=nginx-ingress-controller --timeout=60s
-        kubectl wait --for=condition=ready pod -l app=prometheus --timeout=60s
 
     # Run Load Test
     - name: Run Load Test
