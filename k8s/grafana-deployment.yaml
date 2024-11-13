@@ -13,7 +13,8 @@ spec:
         app: grafana
     spec:
       containers:
-      - name: grafana
-        image: grafana/grafana:v8.0.0
-        ports:
-        - containerPort: 3000
+        - name: grafana
+          image: grafana/grafana:latest  # Ensure latest image version
+          imagePullPolicy: Always        # Force pull the latest image
+      imagePullSecrets:
+        - name: my-registry-secret  # Use this if pulling from a private registry
