@@ -63,6 +63,14 @@ jobs:
         kubectl port-forward service/bar 8081:80 &
         sleep 10  # Wait for services to be available
 
+    # Check deployments and pods status
+    - name: Check Deployments and Pods
+      run: |
+        echo "Checking deployments..."
+        kubectl get deployments
+        echo "Checking pods..."
+        kubectl get pods
+        
     # Run Load Test
     - name: Run Load Test
       run: bash scripts/load-test.sh
