@@ -2,8 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-ingress-controller
-  labels:
-    app: nginx-ingress
+  namespace: ingress-nginx  # Make sure you're using the correct namespace
 spec:
   replicas: 1
   selector:
@@ -16,7 +15,27 @@ spec:
     spec:
       containers:
       - name: nginx-ingress-controller
-        image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master  # Updated image
+        image: nginx/nginx-ingress-controller:latest  # Ensure the image version is correct
         ports:
         - containerPort: 80
         - containerPort: 443
+        args:
+          - "/nginx-ingress-controller"
+          - "--configmap=ingress-nginx/nginx-ingress-controller"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress-nginx
+spec:
+  selector:
+    app: nginx-ingress
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    - protocol: TCP
+      port: 443
+      targetPort: 443
+  type: LoadBalancer  # You can use NodePort if LoadBalancer is unavailable
